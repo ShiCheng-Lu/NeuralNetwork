@@ -26,7 +26,7 @@ public:
 
 private slots:
   void learn();
-  void draw();
+  void mydraw();
 
 private:
     Ui::MainWindow *ui;
@@ -34,6 +34,8 @@ private:
     Network *network;
     std::vector<std::vector<QColor>> colors;
     bool learning = false;
+
     std::thread learningThread;
+    std::thread drawingThread;
 };
 #endif // MAINWINDOW_H

@@ -62,10 +62,6 @@ double Network::cost(vector<Data> dataset) {
     return cost;
 }
 
-double totalCost(Network* n, vector<Data> dataset) {
-
-}
-
 static random_device rd;
 static mt19937 rng(rd());
 
@@ -116,9 +112,9 @@ void Network::print() {
             for (auto& w: node.weights) {
                 cout << " " << w;
             }
-            cout << ' ' << node.bias;
-            cout << endl;
+            cout << ' ' << node.bias << endl;
         }
     }
+    cout << "Cost: " << cost(dataset) << endl;
 }
 

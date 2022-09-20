@@ -17,7 +17,7 @@ Node::Node(int inputSize) {
         weights.push_back(dis(rng));
         weightsGrad.push_back(0);
     }
-    // bias = dis(rng);
+    bias = 0;
     input.resize(inputSize);
 }
 

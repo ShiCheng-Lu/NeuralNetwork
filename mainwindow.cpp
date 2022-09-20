@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
     network = new Network(vector<int>{2, 3, 2});
 
     connect(ui->learn, &QPushButton::released, this, &MainWindow::learn);
-    connect(ui->draw, &QPushButton::released, this, &MainWindow::draw);
+    connect(ui->draw, &QPushButton::released, this, &MainWindow::mydraw);
 
     learningThread = std::thread{&MainWindow::learnThread, this};
 }
@@ -49,9 +49,15 @@ void MainWindow::paintEvent(QPaintEvent *)
 }
 
 void MainWindow::learnThread() {
+    int counter = 100;
     while (true) {
         while (learning) {
             network->learn();
+            if (counter == 100) {
+                mydraw();
+                counter = 0;
+            }
+            counter++;
         }
         this_thread::yield();
     }
@@ -61,10 +67,17 @@ void MainWindow::learn() {
     learning = !learning;
 }
 
-void MainWindow::draw() {
+void MainWindow::mydraw() {
+    // threading, prevent fuzzy output
+    bool originalLearningStatus = learning;
+    learning = false;
+
     colors = network->visualize();
-    repaint();
+    update();
     network->print();
+
+    // restart learning if enabled before
+    learning = originalLearningStatus;
 }
 
 MainWindow::~MainWindow() {
