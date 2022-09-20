@@ -1,7 +1,5 @@
 #include "node.h"
 
-#include "network.h"
-
 #include <cmath>
 #include <vector>
 #include <iostream>
@@ -20,6 +18,7 @@ Node::Node(int inputSize) {
         weightsGrad.push_back(0);
     }
     // bias = dis(rng);
+    input.resize(inputSize);
 }
 
 Node::Node(double bias, std::vector<double> weights): bias{bias}, weights{weights} {}
@@ -37,13 +36,14 @@ double Node::calculate(vector<double>& input) {
     result = this->bias;
     for (int i = 0; i < weights.size(); ++i) {
         result += input[i] * weights[i];
+
+        // save input for training
+        this->input[i] = input[i];
     }
     return activation(result);
 }
 
-double Node::train(vector<double>&input, vector<Node>& nextLayer, int thisIdx) {
-    calculate(input);
-
+void Node::train(vector<Node>& nextLayer, int thisIdx) {
     nodeValue = 0;
 
     // for middle layers
@@ -55,8 +55,6 @@ double Node::train(vector<double>&input, vector<Node>& nextLayer, int thisIdx) {
         weightsGrad[i] += input[i] * nodeValue;
     }
     biasGrad += nodeValue;
-
-    return activation(result);
 }
 
 void Node::learn(double learnRate) {

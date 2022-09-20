@@ -26,9 +26,11 @@ public:
 
 private slots:
   void learn();
+  void draw();
 
 private:
     Ui::MainWindow *ui;
+
     Network *network;
     std::vector<std::vector<QColor>> colors;
     bool learning = false;

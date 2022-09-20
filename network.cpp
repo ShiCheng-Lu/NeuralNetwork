@@ -50,26 +50,6 @@ vector<vector<QColor>> Network::visualize() {
     return colors;
 }
 
-//void Network::setValues(vector<double> weights) {
-//    int weights_idx = 0;
-//    for (auto& layer : layers) {
-//        for (auto& node : layer.nodes) {
-//            for (int i = 0; i < node.weights.size(); ++i) {
-//                node.weights[i] = weights[weights_idx];
-
-//                if (weights_idx++ >= weights.size()) {
-//                    return;
-//                }
-//            }
-//            node.bias = weights[weights_idx];
-
-//            if (weights_idx++ >= weights.size()) {
-//                return;
-//            }
-//        }
-//    }
-//}
-
 double Network::cost(vector<Data> dataset) {
     double cost;
     for (auto& data : dataset) {
@@ -103,36 +83,41 @@ vector<Data> randomSubset(vector<Data> dataset, unsigned int size) {
 }
 
 double learnRate = 0.05;
-double delta = 0.001;
 void Network::learn() {
     // random set of points
-    vector<Data> randDataset = randomSubset(dataset, 30);
+    // vector<Data> randDataset = randomSubset(dataset, 30);
 
-    double baseCost = totalCost(this, randDataset);
+    for (auto& data : dataset) {
+        auto res = classify(data.inputs);
 
-    cerr << baseCost << '\n';
-    // for every weight, calc change in cost by change in weight
-    for (auto& layer : layers) {
-        for (auto& node : layer.nodes) {
-            for (int i = 0; i < node.weights.size(); ++i) {
-                node.weights[i] += delta;
-                node.weightsGrad[i] = (totalCost(this, randDataset) - baseCost) / delta;
-                node.weights[i] -= delta;
-            }
-            // gradiant for bias
-            node.bias += delta;
-            node.biasGrad = (totalCost(this, randDataset) - baseCost) / delta;
-            node.bias -= delta;
+        // set dummy layer's values
+        mockLayer.nodes[0].nodeValue = 1;
+        for (int i = 0; i < mockLayer.nodes[0].weights.size(); ++i) {
+            mockLayer.nodes[0].weights[i] = costDeriv(res[i], i == data.expected ? 1 : 0);
+        }
+
+        layers[layers.size() - 1].train(&mockLayer);
+        // back prop
+        for (int i = layers.size() - 2; i >= 0; --i) {
+            layers[i].train(&layers[i + 1]);
         }
     }
-
-    // apply all gradient
+    // apply gradient descent
     for (auto& layer : layers) {
-        for (auto& node : layer.nodes) {
-            for (int i = 0; i < node.weights.size(); ++i) {
-                node.weights[i] -= node.weightsGrad[i] * learnRate;
+        layer.learn(learnRate);
+    }
+}
+
+void Network::print() {
+    for (int l = 0; l < layers.size(); ++l) {
+        for (int n = 0; n < layers[l].nodes.size(); ++n) {
+            auto& node = layers[l].nodes[n];
+            cout << "l" << l << 'n' << n;
+            for (auto& w: node.weights) {
+                cout << " " << w;
             }
-            node.bias -= node.biasGrad * learnRate;
+            cout << ' ' << node.bias;
+            cout << endl;
         }
     }
 }

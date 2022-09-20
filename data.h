@@ -10,7 +10,7 @@
  */
 class Data
 {
-public:
+public: // for testing leave everyone public for now
     std::vector<double> inputs;
     int expected;
 public:

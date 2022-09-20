@@ -3,7 +3,7 @@
 using namespace std;
 
 Data::Data(initializer_list<double> args): inputs{args} {
-    res = int(inputs.back());
+    expected = int(inputs.back());
     inputs.pop_back();
 }
 

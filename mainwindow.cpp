@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
     network = new Network(vector<int>{2, 3, 2});
 
     connect(ui->learn, &QPushButton::released, this, &MainWindow::learn);
+    connect(ui->draw, &QPushButton::released, this, &MainWindow::draw);
 
     learningThread = std::thread{&MainWindow::learnThread, this};
 }
@@ -34,7 +35,7 @@ void MainWindow::paintEvent(QPaintEvent *)
     }
 
     for (auto& point : dataset) {
-        painter.setPen(qRgb((1 - point.res) * 255, point.res * 255, 0));
+        painter.setPen(qRgb((1 - point.expected) * 255, point.expected * 255, 0));
         int x = int(point.inputs[0] * 500) + 20;
         int y = int(point.inputs[1] * 500) + 120;
         painter.drawPoint(x - 1, y);
@@ -48,14 +49,9 @@ void MainWindow::paintEvent(QPaintEvent *)
 }
 
 void MainWindow::learnThread() {
-    int count = 0;
     while (true) {
         while (learning) {
-            count ++;
             network->learn();
-            colors = network->visualize();
-
-            repaint();
         }
         this_thread::yield();
     }
@@ -63,6 +59,12 @@ void MainWindow::learnThread() {
 
 void MainWindow::learn() {
     learning = !learning;
+}
+
+void MainWindow::draw() {
+    colors = network->visualize();
+    repaint();
+    network->print();
 }
 
 MainWindow::~MainWindow() {

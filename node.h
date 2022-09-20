@@ -2,10 +2,10 @@
 #define NODE_H
 
 #include <vector>
-#include "data.h"
 
-class Node
-{
+class Node {
+public: // for testing leave everyone public for now
+
     std::vector<double> input;
 
     double result;
@@ -19,7 +19,6 @@ class Node
     std::vector<double> weightsGrad;
 
 public:
-
     Node(int inputSize);
 
     Node(double bias, std::vector<double> weights);
@@ -30,7 +29,7 @@ public:
 
     double calculate(std::vector<double>& input);
 
-    double train(std::vector<double>& input, double expected, std::vector<Node>& nextLayer, int thisIdx);
+    void train(std::vector<Node>& nextLayer, int thisIdx);
 
     void learn(double learnRate);
 

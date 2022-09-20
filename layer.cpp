@@ -15,3 +15,15 @@ vector<double> Layer::calculate(vector<double> input) {
     }
     return ret;
 }
+
+void Layer::train(Layer* nextLayer) {
+    for (int i = 0; i < nodes.size(); ++i) {
+        nodes[i].train(nextLayer->nodes, i);
+    }
+}
+
+void Layer::learn(double learnRate) {
+    for (auto& node : nodes) {
+        node.learn(learnRate);
+    }
+}

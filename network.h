@@ -7,8 +7,10 @@
 #include <QColor>
 
 class Network {
-
+public: // for testing leave everyone public for now
     std::vector<Layer> layers;
+
+    // dummy last layer that provide cost deriv as weight * nodeValue
     Layer mockLayer;
 
 public:
@@ -28,6 +30,8 @@ public:
     double cost(std::vector<Data> dataset);
 
     void learn();
+
+    void print();
 };
 
 #endif // NETWORK_H

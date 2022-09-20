@@ -10,7 +10,7 @@
  */
 class Layer
 {
-public:
+public: // for testing leave everyone public for now
     std::vector<Node> nodes;
 
     Layer(int inputSize, int outputSize);
@@ -24,7 +24,9 @@ public:
     std::vector<double> calculate(std::vector<double> input);
 
 
-    std::vector<double> train(std::vector<double> input, Layer* nextLayer);
+    void train(Layer* nextLayer);
+
+    void learn(double learnRate);
 };
 
 #endif // LAYER_H
