@@ -2,15 +2,23 @@
 #define NODE_H
 
 #include <vector>
+#include "data.h"
 
 class Node
 {
+    std::vector<double> input;
+
+    double result;
     double output;
     double nodeValue;
 
-public:
     double bias;
     std::vector<double> weights;
+
+    double biasGrad;
+    std::vector<double> weightsGrad;
+
+public:
 
     Node(int inputSize);
 
@@ -22,8 +30,11 @@ public:
 
     double calculate(std::vector<double>& input);
 
-    // apply gradient descent
-    void learn(double expected, double learnRate);
+    double train(std::vector<double>& input, double expected, std::vector<Node>& nextLayer, int thisIdx);
+
+    void learn(double learnRate);
+
+    double getNodeValue();
 };
 
 #endif // NODE_H

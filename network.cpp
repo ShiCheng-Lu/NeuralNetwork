@@ -17,13 +17,11 @@ double Network::costDeriv(double result, double expected) {
     return 2 * (result - expected);
 }
 
-Network::Network(vector<int> size) {
+Network::Network(vector<int> size): mockLayer{size.back(), 1} {
     for (int i = 1; i < size.size(); ++i) {
         layers.emplace_back(size[i - 1], size[i]);
     }
 }
-
-
 
 vector<double> Network::classify(vector<double> input) {
     for (auto& layer : layers) {
@@ -78,7 +76,7 @@ double Network::cost(vector<Data> dataset) {
         auto result = classify(data.inputs);
 
         for (int i = 0; i < result.size(); ++i) {
-            cost += Network::cost(result[i], data.res == i ? 1 : 0);
+            cost += Network::cost(result[i], data.expected == i ? 1 : 0);
         }
     }
     return cost;

@@ -4,6 +4,10 @@
 #include "node.h"
 #include <vector>
 
+/**
+ * @brief a node layer
+ * 
+ */
 class Layer
 {
 public:
@@ -11,7 +15,16 @@ public:
 
     Layer(int inputSize, int outputSize);
 
+    /**
+     * @brief 
+     * 
+     * @param input 
+     * @return std::vector<double> 
+     */
     std::vector<double> calculate(std::vector<double> input);
+
+
+    std::vector<double> train(std::vector<double> input, Layer* nextLayer);
 };
 
 #endif // LAYER_H

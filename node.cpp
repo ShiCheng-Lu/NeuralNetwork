@@ -17,6 +17,7 @@ Node::Node(int inputSize) {
     // randomize weight and bias
     for (int i = 0; i < inputSize; ++i) {
         weights.push_back(dis(rng));
+        weightsGrad.push_back(0);
     }
     // bias = dis(rng);
 }
@@ -33,21 +34,46 @@ double Node::activationDeriv(double input) {
 }
 
 double Node::calculate(vector<double>& input) {
-    double result = this->bias;
+    result = this->bias;
     for (int i = 0; i < weights.size(); ++i) {
         result += input[i] * weights[i];
     }
-    output = activation(result);
-
-    // for back propagation
-    nodeValue = activationDeriv(result);
-    return output;
+    return activation(result);
 }
 
-void Node::learn(double expected, double learnRate) {
-    nodeValue *= Network::costDeriv(output, expected);
+double Node::train(vector<double>&input, vector<Node>& nextLayer, int thisIdx) {
+    calculate(input);
 
-    for (int i = 0; i < weights.size(); ++i) {
+    nodeValue = 0;
 
+    // for middle layers
+    for (int i = 0; i < nextLayer.size(); ++i) {
+        nodeValue += activationDeriv(result) * nextLayer[i].weights[thisIdx] * nextLayer[i].nodeValue;
     }
+
+    for (int i = 0; i < weightsGrad.size(); ++i) {
+        weightsGrad[i] += input[i] * nodeValue;
+    }
+    biasGrad += nodeValue;
+
+    return activation(result);
 }
+
+void Node::learn(double learnRate) {
+    // apply gradients
+    for (int i = 0; i < weightsGrad.size(); ++i) {
+        weights[i] -= weightsGrad[i] * learnRate;
+    }
+    bias -= biasGrad * learnRate;
+
+    // clear gradients
+    for (int i = 0; i < weightsGrad.size(); ++i) {
+        weightsGrad[i] = 0;
+    }
+    biasGrad = 0;
+}
+
+double Node::getNodeValue() {
+    return nodeValue;
+}
+

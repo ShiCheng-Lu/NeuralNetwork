@@ -9,10 +9,12 @@
 class Network {
 
     std::vector<Layer> layers;
+    Layer mockLayer;
 
 public:
     static double cost(double result, double expected);
 
+    // how does change in result affect change in cost
     static double costDeriv(double result, double expected);
 
     Network(std::vector<int> nodeCount);
